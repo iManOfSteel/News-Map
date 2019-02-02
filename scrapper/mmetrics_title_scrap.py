@@ -38,11 +38,32 @@ def download_region_titles(region_code):
     return titles
 
 
-def download_data():
-    with open('reg.json', 'r') as file:
+REGION_FILE = 'reg2.json'
+OLD_REGION_FILE = 'reg.json'
+DELTA_FILE = 'delta.json'
+
+
+def download_data(reg_file):
+    with open(reg_file, 'r') as file:
         reg_mapper = json.load(file)
         for region, url in reg_mapper.items():
             code = int(url.split('/')[-1])
             print(region, code)
             with open('mm_news/{}.json'.format(region), 'w') as region_out:
                 json.dump(download_region_titles(code), region_out)
+
+
+def write_new_regions(reg_file, old_file, delta_file):
+    old_dict = dict()
+    new_dict = dict()
+    with open(old_file, 'r') as file:
+        old_dict = json.load(file)
+    with open(reg_file, 'r') as file:
+        new_dict = json.load(file)
+
+    left_regions = list(filter(None, map(lambda tup: tup if tup[0] not in old_dict else '',
+                                         new_dict.items())))
+
+    formatted = {x[0]: x[1].split('/month.html')[-2] for x in left_regions}
+    with open(delta_file, 'w') as file:
+        json.dump(formatted, file)
