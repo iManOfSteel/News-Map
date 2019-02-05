@@ -1,4 +1,5 @@
 import nltk
+import pymorphy2
 import re
 from pymystem3 import Mystem
 from nltk.corpus import stopwords
@@ -7,6 +8,7 @@ from string import punctuation
 
 RUSSIAN_STOPWORDS = stopwords.words('russian')
 RUSSIAN_STOPWORDS.remove('не')
+MORPH = pymorphy2.MorphAnalyzer()
 
 
 def lemmatize_text(text):
@@ -33,7 +35,8 @@ def remove_not_words_punct(tokenized_text):
 
 
 def is_wordlike(token):
-    return token.isalpha() or (len(token) > 3 and token[3:].isalpha())
+    return MORPH.word_is_known(token) or (token[:3] == 'не_' and len(token) > 3
+                                          and MORPH.word_is_known(token[3:]))
 
 
 def remove_not_words(tokenized_text):
