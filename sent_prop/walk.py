@@ -1,13 +1,6 @@
 import numpy as np
 
 
-def get_edge_matrix(embeddings):
-    matrix = np.dot(embeddings.matrix, np.transpose(embeddings.matrix))
-    matrix = np.arccos(np.clip(-matrix, -1, 1))/np.pi
-    np.fill_diagonal(matrix, 0)
-
-
-
 def transition_matrix(embeddings):
     edge_matrix = get_edge_matrix(embeddings)
     scale_matrix = np.diag([1. / np.sqrt(edge_matrix[i].sum())
