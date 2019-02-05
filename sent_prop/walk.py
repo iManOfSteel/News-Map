@@ -1,4 +1,30 @@
+import gensim
 import numpy as np
+import pandas as pd
+import os
+from sklearn.metrics.pairwise import cosine_similarity
+from collections import Counter
+
+
+def get_popular_words(texts, num=10000):
+    words = list(map(lambda x: x[0], Counter(' '.join(texts)).most_common(num)))
+    return words
+
+
+def get_edge_matrix(embeddings, k=25):
+    A = np.array([embeddings[word] for word in embeddings.iw])
+    T = cosine_similarity(A)
+    T = np.arccos(np.clip(-T, -1, 1)) / np.pi
+    def knn(vec, k=k):
+        vec[vec < np.argsort(vec)[-k]] = 0.
+    np.fill_diagonal(T, 0)
+    np.apply_along_axis(knn, 1, T)
+    return T
+
+
+def get_dict_from_csv(filename):
+    doc = pd.read_csv(filename)
+    return get_dict(doc['news'])
 
 
 def transition_matrix(embeddings):
@@ -25,6 +51,7 @@ def random_walk(embeddings, positive_seeds, negative_seeds, beta=0.9, max_iter=5
 
 def run_walk(tr_matrix, pol_vector, beta, max_iter, eps):
     for i in range(max_iter):
+        print('walking {}:{}'.format(i, max_iter))
         new_vector = beta * np.dot(tr_matrix, pol_vector) + (1 - beta) * pol_vector
         if np.abs(new_vector - pol_vector).sum() < eps:
             break
@@ -34,3 +61,14 @@ def run_walk(tr_matrix, pol_vector, beta, max_iter, eps):
 
 def get_walk_start_vector(words, seeds):
     return np.array([seeds[word] if word in seeds else 0.0 for word in words])
+
+def get_trained_model(data_file='data.csv', wv_file='wiki.ru.vec'):
+    positive_seeds = ["хороший", "прекрасный", "счастливый", "улучшение", "прогресс", "успех", "добро"]
+    negative_seeds = ["ненависть", "ужасный", "несчастный", "трагедия", "плохой", "зло", "смерть"]
+
+    embeddings = gensim.models.KeyedVectors.load_word2vec_format(wv_file) 
+    embeddings.iw = get_dict_from_csv(data_file)
+    random_walk(embeddings, positive_seeds, negative_seeds)
+
+if __name__ == "__main__":
+    get_trained_model()
