@@ -57,11 +57,17 @@ def process_negation(tokenized_text):
     return ans
 
 
-def prepare_text(text: str,
+def photo_news_delete(tokenized_text):
+    if len(tokenized_text) <= 3 and tokenized_text[0] == 'фото':
+        return ''
+
+
+def prepare_text(text,
                  process_not=True, # не люблю -> не_люблю
                  words_only=True, # remove all except russian words
                  lemmatize=True, # lemmatize
                  remove_stop_words=True, #remove stop words
+                 photo_to_delete=True,
                  min_tf=100, # min word freq
                  max_tf = 0.9):
 
@@ -83,5 +89,8 @@ def prepare_text(text: str,
 
     if words_only:
         processed = remove_not_words(processed)
+
+    if photo_to_delete:
+        processed = photo_news_delete(processed)
 
     return processed
