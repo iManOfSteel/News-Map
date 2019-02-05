@@ -139,7 +139,8 @@ def concat_csv(path, delim='№%:№%:'):
 
 	vk_publics.to_csv(path + '/collected.csv')
 
-if __name__ == '__main__':
+
+def main():
 	file_type = sys.argv[1]
 	path = sys.argv[2]
 
@@ -152,3 +153,7 @@ if __name__ == '__main__':
 			concat_csv(path, sys.argc[3])
 		else:
 			concat_csv(path)
+
+
+if __name__ == '__main__':
+    main()
