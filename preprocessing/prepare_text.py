@@ -63,8 +63,7 @@ def process_negation(tokenized_text):
 
 
 def photo_news_delete(tokenized_text):
-    if len(tokenized_text) <= 3 and tokenized_text[0] == 'фото':
-        return ''
+    return len(tokenized_text) <= 3 and tokenized_text[0] == 'фото'
 
 
 def prepare_text(text,
@@ -95,7 +94,7 @@ def prepare_text(text,
     if words_only:
         processed = remove_not_words(processed)
 
-    if photo_to_delete:
-        processed = photo_news_delete(processed)
+    if photo_news_delete(processed):
+        processed = list()
 
     return processed
