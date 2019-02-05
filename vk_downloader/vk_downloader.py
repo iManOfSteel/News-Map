@@ -1,8 +1,11 @@
 import json
+import os
 import urllib.request
 import sys
 import time
 import pandas
+
+DOWNLOAD_FOLDER = '../data/first_ver/'
 
 #ids = [int(sys.argv[1])]
 
@@ -18,8 +21,8 @@ for public_id in ids:
     url = 'https://api.vk.com/api.php?v=5.92&oauth=1&method=wall.get&access_token=21879b7121879b7121879b71e821eff3832218721879b717dd3b072e11a6bb90613e277&count=100'
     url += '&owner_id=-' + str(public_id)
 
-    output_long = open('public' + str(public_id) + '.csv', 'w')
-    output_short = open('public' + str(public_id) + '_short.csv', 'w')
+    output_long = open(os.path.join(DOWNLOAD_FOLDER, 'vk_long', 'public' + str(public_id) + '.csv'), 'w')
+    output_short = open(os.path.join(DOWNLOAD_FOLDER, 'vk_short', 'public' + str(public_id) + '_short.csv'), 'w')
     for i in range(number_of_news // 100):
         response = urllib.request.urlopen(url + '&offset=' + str(i * 100))
         data = json.loads(response.read().decode('utf-8'))

@@ -38,9 +38,7 @@ def download_region_titles(region_code):
     return titles
 
 
-REGION_FILE = 'reg2.json'
-OLD_REGION_FILE = 'reg.json'
-DELTA_FILE = 'delta.json'
+REGION_FILE = 'region_list.json'
 
 
 def download_data(reg_file):
