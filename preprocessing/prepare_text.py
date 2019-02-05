@@ -35,8 +35,10 @@ def remove_not_words_punct(tokenized_text):
 
 
 def is_wordlike(token):
-    return MORPH.word_is_known(token) or (token[:3] == 'не_' and len(token) > 3
-                                          and MORPH.word_is_known(token[3:]))
+    if len(token) >= 3 and token[:3] == 'не_':
+        return len(token) > 3 and token[3].isalpha()
+    else:
+        return token[0].isalpha()
 
 
 def remove_not_words(tokenized_text):
