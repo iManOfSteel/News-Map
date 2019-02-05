@@ -38,12 +38,11 @@ def is_wordlike(token):
     if len(token) >= 3 and token[:3] == 'не_':
         return len(token) > 3 and token[3].isalpha()
     else:
-        return token[0].isalpha()
+        return len(token) > 0 and token[0].isalpha()
 
 
 def remove_not_words(tokenized_text):
-    return list(filter(lambda token: len(token) > 0 and is_wordlike(token),
-                       tokenized_text))
+    return list(filter(is_wordlike, tokenized_text))
 
 
 def process_negation(tokenized_text):
