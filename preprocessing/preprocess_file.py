@@ -33,7 +33,7 @@ def parse_text(text):
 
 
 def prepare_file_parallel(path):
-    data = pd.read_csv(path, nrows=1000)
+    data = pd.read_csv(path)
     data.fillna('', inplace=True)
 
     parsed_news = Parallel(n_jobs=4)(delayed(parse_text)(data.news[i]) for i in range(len(data.news)))
