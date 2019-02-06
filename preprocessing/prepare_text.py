@@ -9,9 +9,11 @@ RUSSIAN_STOPWORDS = stopwords.words('russian')
 RUSSIAN_STOPWORDS.remove('не')
 lemmatizer = Mystem()
 
+
 def lemmatize_text(text):
     return list(filter(None, map(lambda x: x.strip(),
                                  lemmatizer.lemmatize(text))))
+
 
 def remove_stopwords(tokenized_text):
     return list(filter(lambda x: x not in RUSSIAN_STOPWORDS, tokenized_text))
@@ -59,6 +61,7 @@ def process_negation(tokenized_text):
 
 def photo_news_delete(tokenized_text):
     return len(tokenized_text) <= 3 and 'фото' in tokenized_text
+
 
 def prepare_text(text,
                  process_not=True, # не люблю -> не_люблю
