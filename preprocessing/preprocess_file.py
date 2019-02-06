@@ -28,16 +28,17 @@ def prepare_file(path):
     pd.DataFrame(data.news).to_csv(os.path.join(os.path.dirname(os.path.abspath(path)), 'prepared.csv'))
 
 
-def parse_text(text):
-    return remove_locations(' '.join(prepare_text.prepare_text(text)))
-
+def parse_text(text, i):
+	if i % 1000 == 0:
+		print(i)
+	return remove_locations(' '.join(prepare_text.prepare_text(text)))
 
 def prepare_file_parallel(path):
-    data = pd.read_csv(path, nrows=1000)
-    data.fillna('', inplace=True)
+	data = pd.read_csv(path)
+	data.fillna('', inplace=True)
 
-    parsed_news = Parallel(n_jobs=4)(delayed(parse_text)(data.news[i]) for i in range(len(data.news)))
-    pd.DataFrame(parsed_news).to_csv(os.path.join(os.path.dirname(os.path.abspath(path)), 'prepared.csv'))
+	parsed_news = Parallel(n_jobs=4)(delayed(parse_text)(data.news[i], i) for i in range(len(data.news)))
+	pd.DataFrame(parsed_news).to_csv(os.path.join(os.path.dirname(os.path.abspath(path)), 'prepared.csv'))
 
 
 def main():
