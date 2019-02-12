@@ -1,7 +1,10 @@
 import pickle
 import os
+import numpy as np
+from preprocessing import prepare_text
 
 SENTIMENT_DICT_FILE = 'dictionary.pickle'
+INITED = False
 
 
 def init():
@@ -11,6 +14,8 @@ def init():
 
 
 def get_text_score(text, wrd_scores=None, w=None, activation=None):
+    if not INITED:
+        init()
     if wrd_scores is None:
         wrd_scores = sentiment_dict
     if activation is None:
@@ -27,3 +32,10 @@ def get_text_score(text, wrd_scores=None, w=None, activation=None):
                 score += activation(wrd_scores[word]) * w[word]
                 cnt += 1
     return score / cnt if cnt > 0 else 0
+
+
+def analyze_text(text):
+    if not INITED:
+        init()
+    return get_text_score(prepare_text.process_text(text),
+                          activation=lambda x: np.tan(np.pi * (x - 0.1) / 1.1))

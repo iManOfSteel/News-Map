@@ -81,9 +81,7 @@ def prepare_text(text,
                  words_only=True, # remove all except russian words
                  lemmatize=True, # lemmatize
                  remove_stop_words=True, #remove stop words
-                 photo_to_delete=True,
-                 min_tf=100, # min word freq
-                 max_tf = 0.9):
+                 photo_to_delete=True):
 
     text = text.lower()
     text = text.replace('ё', 'е')
@@ -104,7 +102,11 @@ def prepare_text(text,
     if words_only:
         processed = remove_not_words(processed)
 
-    if photo_news_delete(processed):
+    if photo_to_delete and photo_news_delete(processed):
         processed = list()
 
     return processed
+
+
+def process_text(text):
+    return ' '.join(prepare_text(delete_locations(text)))
