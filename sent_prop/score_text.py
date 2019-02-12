@@ -35,7 +35,9 @@ def get_text_score(text, wrd_scores=None, w=None, activation=None):
 
 
 def analyze_text(text):
+    global INITED
     if not INITED:
         init()
+        INITED = True
     return get_text_score(prepare_text.process_text(text),
                           activation=lambda x: np.tan(np.pi * (x - 0.1) / 1.1))
