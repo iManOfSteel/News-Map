@@ -1,6 +1,7 @@
 import nltk
 import re
 from pymystem3 import Mystem
+from natasha import LocationExtractor
 from nltk.corpus import stopwords
 from string import punctuation
 
@@ -8,6 +9,18 @@ from string import punctuation
 RUSSIAN_STOPWORDS = stopwords.words('russian')
 RUSSIAN_STOPWORDS.remove('не')
 lemmatizer = Mystem()
+
+
+def delete_locations(news):
+    extractor = LocationExtractor()
+    matches = extractor(news)
+    if len(matches) == 0:
+        return news
+    result = news[:matches[0].span[0]]
+    for i in range(len(matches) - 1):
+        result += news[matches[i].span[1]: matches[i + 1].span[0]].strip()
+    result += news[matches[-1].span[1]:]
+    return result
 
 
 def lemmatize_text(text):
