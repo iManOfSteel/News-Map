@@ -40,9 +40,6 @@ def decode_number_dict_to_named(filename_dict: str, filename_area: str):
         number_dict = summate_second_type(number_dict)
 
     linearized = load_linearized(filename_area)
-    for x, y in number_dict.items():
-        print(x, int(x))
-        pass
     return {linearized[int(x)]: y for x, y in number_dict.items() if int(x) != 0}
 
 
