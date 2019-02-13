@@ -17,7 +17,6 @@ ARTICLE_FAILED_MESSAGE = 'Кажется со статьей что-то не т
 MAP_FAILED_MESSAGE = 'Карта сейчас недоступна('
 
 REG_PROCESSING_MESSAGE = 'Обрабатываем данные...'
-REG_INVALID_INPUT_MESSAGE = 'Нужно именно местоположение(прикрепить -> геопозиция)'
 REG_FAILED_MESSAGE = 'Кажется, что даже нам неизвестно как там дела -_-'
 
 BTN_ARTICLE = 'Предложить новость'
@@ -68,8 +67,9 @@ def on_article(message):
     cid = message.chat.id
     bot.send_message(cid, ARTICLE_SENT_MESSAGE)
     try:
-        handler.process_article(message.text)
+        sc = handler.process_article(message.text)
         bot.send_message(cid, ARTICLE_PROCESSED_MESSAGE)
+        bot.send_message(cid, 'Оценка новости: {}'.format(sc))
     except Exception as e:
         bot.send_message(cid, ARTICLE_FAILED_MESSAGE)
     chat_states[cid] = DEFAULT_STATE
@@ -81,11 +81,11 @@ def on_reg(message):
     cid = message.chat.id
     bot.send_message(cid, REG_PROCESSING_MESSAGE)
     try:
-        area, score = handler.process_reg(
+        area, (summ, cnt) = handler.process_reg(
             longitude=message.location.longitude,
             latitude=message.location.latitude
         )
-        bot.send_message(cid, "Местоположение: {}, оценка: {}".format(area, score))
+        bot.send_message(cid, "Местоположение: {}, оценка: {:.2f}".format(area, summ / cnt))
     except Exception as e:
         print(str(e))
         bot.send_message(cid, REG_FAILED_MESSAGE)
@@ -95,7 +95,13 @@ def on_reg(message):
 @bot.message_handler(func=lambda m: chat_states[m.chat.id] == BTN_REG, content_types='text')
 def on_reg(message):
     cid = message.chat.id
-    bot.send_message(cid, REG_INVALID_INPUT_MESSAGE)
+    try:
+        summ, cnt = handler.process_reg_text(message.text)
+        bot.send_message(cid, "Oценка: {:.2f}".format(summ / cnt))
+    except Exception as e:
+        print(str(e))
+        bot.send_message(cid, REG_FAILED_MESSAGE)
+    chat_states[cid] = DEFAULT_STATE
 
 
 bot.polling()

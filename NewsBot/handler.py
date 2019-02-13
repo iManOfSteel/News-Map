@@ -1,10 +1,12 @@
 import requests
+import json
 import score_text
 import xml.etree.ElementTree
 
 OSM_API = 'https://nominatim.openstreetmap.org/reverse'
 
-area_score = {'хабаровский край': 2.5, 'киренский район': 2}
+with open('reg_scores.json') as f:
+    area_score = json.load(f)
 
 
 def process_map(message):
@@ -28,3 +30,10 @@ def process_reg(longitude=None, latitude=None):
     for area_name in area_names:
         if area_name in areas and areas[area_name] in area_score:
             return (areas[area_name], area_score[areas[area_name]])
+
+def process_reg_text(loc_name):
+    loc_name = loc_name.lower()
+    if loc_name in area_score:
+        return area_score[loc_name]
+    loc_name = 'городской округ {}'.format(loc_name)
+    return area_score[loc_name]
