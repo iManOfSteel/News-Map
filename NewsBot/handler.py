@@ -7,7 +7,7 @@ area_score = {'хабаровский край': 2.5, 'киренский рай
 
 
 def process_map(message):
-    return 'https://bit.ly/2BoyLbN'
+    return 'https://bit.ly/2BAbS5m'
 
 
 def process_article(text):
