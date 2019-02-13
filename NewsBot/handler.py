@@ -1,4 +1,5 @@
 import requests
+import score_text
 import xml.etree.ElementTree
 
 OSM_API = 'https://nominatim.openstreetmap.org/reverse'
@@ -11,9 +12,7 @@ def process_map(message):
 
 
 def process_article(text):
-    if 'путин' in text.lower():
-        raise Exception
-
+    return score_text.analyze_text(text)
 
 def process_reg(longitude=None, latitude=None):
     response = requests.get(OSM_API + '?lat=' + str(latitude) + '&lon=' + str(longitude))
